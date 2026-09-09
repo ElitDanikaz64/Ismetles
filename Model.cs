@@ -62,7 +62,8 @@ namespace DELETE
         // Ha például több személyszállító repülőgép található a file-ban,
         // a "Személyszállító" típus csak egyszer kerüljön bele a típusok listájába.
 
-        Dictionary<PlaneType, List<Plane>> PlanesDict = new();
+        List<Plane> Planes = new List<Plane>();
+        List<PlaneType> PlaneTypes = new List<PlaneType>();
 
         private void ReadFile()
         {
@@ -71,7 +72,6 @@ namespace DELETE
             while (!str.EndOfStream)
             {
                 // 0PlaneId;1PlaneName;2Capacity;3MaxSpeed;4BuiltYear;5TypeId;6TypeName
-                // remeljuk hogy nem változik majd a sorrend:)
 
                 string[] lineContent = str.ReadLine().Split(';');
 
@@ -95,17 +95,14 @@ namespace DELETE
 
                 );
 
-                // nem létezik-e az id?
-                if (!PlanesDict.Where(x=>x.Key.TypeId == currentPlaneType.TypeId).Any())
+                if (!PlaneTypes.Contains(currentPlaneType))
                 {
-                    List<Plane> newValue = new List<Plane>();
-                    newValue.Add(currentPlane);
-
-                    PlanesDict.Add(currentPlaneType, newValue);
+                    PlaneTypes.Add(currentPlaneType);
+                    Planes.Add(currentPlane);
                 }
                 else 
                 {
-                    PlanesDict[currentPlaneType].Add(currentPlane);
+                    Planes.Add(currentPlane);
                 }
             }
 
@@ -126,7 +123,7 @@ namespace DELETE
 
         public List<string> GetPlanesByType(PlaneType planeType)
         {
-            return PlanesDict[planeType].Select(x=>x.PlaneName).ToList();
+            return Planes.Where(x => PlaneTypes.First(y => y.TypeId == x.TypeId).TypeName == planeType.TypeName).Select(x => x.PlaneName).ToList();
         }
 
         // 5. feladat
@@ -135,20 +132,7 @@ namespace DELETE
 
         public List<string> _5(int year)
         {
-
-            // nem használtuk a SelectMany-t idáig szóval megoldom máshogy is, (amúgy értem mit csinál)
-
-            /*  return PlanesDict.SelectMany(x => x.Value).Where(x => x.BuiltYear <= year).Select(x => x.PlaneName).ToList();  */
-
-
-            List<string> returnList = new();
-
-            foreach (KeyValuePair<PlaneType, List<Plane>> type in PlanesDict)
-            {
-                returnList.AddRange(type.Value.Where(x => x.BuiltYear <= year).Select(x => x.PlaneName));
-            }
-
-            return returnList;
+            return Planes.Where(x=>x.BuiltYear <= year).Select(x=>x.PlaneName).ToList();
         }
 
         // 6. feladat
@@ -157,7 +141,7 @@ namespace DELETE
 
         public Dictionary<string, int> _6()
         {
-            return PlanesDict.ToDictionary(x => x.Key.TypeName, x=>x.Value.Count);
+            return Planes.GroupBy(x=>x.TypeId, PlaneTypes.Select(y=>y.TypeId))
         }
 
         // 7. feladat
@@ -343,7 +327,7 @@ namespace DELETE
 
         public List<string> _24()
         {
-            return PlanesDict.Where();
+            return PlanesDict.Wh;
         }
 
         // 25. feladat
