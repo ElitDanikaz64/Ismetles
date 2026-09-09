@@ -174,18 +174,27 @@ namespace DELETE
 
         public List<string> _8()
         {
-            return PlanesDict.SelectMany(x=>x.Value).Where(x=>x.PlaneName.Split(' ').Length >= 3).OrderBy(x=>x.PlaneName).Select(x=>x.PlaneName).ToList();
+            return PlanesDict.SelectMany(x => x.Value).Where(x => x.PlaneName.Split(' ').Length >= 3).OrderBy(x => x.PlaneName).Select(x => x.PlaneName).ToList();
         }
 
         // 9. feladat
         // Készíts függvényt, amely megmondja, hogy típusonként mennyi az átlagos sebesség.
         // Add vissza egy szótárban a típus nevét és a hozzá tartozó lebegőpontos értéket.
 
+        public Dictionary<string, double> _9()
+        {
+            return PlanesDict.ToDictionary(x => x.Key.TypeName, x => x.Value.Average(x => x.MaxSpeed));
+        }
+
         // 10. feladat
         // Készíts függvényt, amely paraméterként kap egy minimum kapacitást.
         // Add vissza azoknak a repülőgépeknek a neveit, amelyek kapacitása legalább akkora, mint a paraméterként kapott érték.
         // Az eredményt rendezd kapacitás szerint növekvő sorrendbe.
 
+        public List<string> _10(int minCapacity)
+        {
+            return PlanesDict.SelectMany(x => x.Value).Where(x => x.Capacity >= minCapacity).OrderBy(x => x.Capacity).Select(x => x.PlaneName).ToList();
+        }
 
         // 11. feladat
         // Készíts függvényt, amely paraméterként kap egy darabszámot.
@@ -196,35 +205,59 @@ namespace DELETE
         // ha a paraméter értéke 5,
         // akkor az 5 leggyorsabb repülőgép nevét add vissza.
 
+        public List<string> _11(int dbSzam)
+        {
+            return PlanesDict.SelectMany(x => x.Value).OrderByDescending(x => x.MaxSpeed).Select(x => x.PlaneName).Take(dbSzam).ToList();
+        }
 
         // 12. feladat
         // Készíts függvényt, amely paraméterként kap egy minimum és egy maximum kapacitást.
         // Add vissza azoknak a repülőgépeknek a neveit, amelyek kapacitása a két megadott érték közé esik.
         // Az eredményt rendezd ABC-sorrendbe.
 
+        public List<string> _12(int minCapacity, int maxCapacity)
+        {
+            return PlanesDict.SelectMany(x => x.Value).Where(x => x.Capacity >= minCapacity && x.Capacity < maxCapacity).OrderBy(x => x.PlaneName).Select(x => x.PlaneName).ToList();
+        }
 
         // 13. feladat
         // Készíts függvényt, amely paraméterként kap egy évszámot és egy minimum maximális sebességet.
         // Add vissza azoknak a repülőgépeknek a neveit, amelyek a paraméterként kapott év után készültek, és maximális sebességük legalább akkora, mint a paraméterként kapott sebesség.
         // Az eredményt MaxSpeed szerint csökkenő sorrendbe rendezd.
 
+        public List<string> _13(int speed, int year)
+        {
+            return PlanesDict.SelectMany(x => x.Value).Where(x => x.BuiltYear > year && x.MaxSpeed >= speed).OrderByDescending(x => x.MaxSpeed).Select(x => x.PlaneName).ToList();
+        }
 
         // 14. feladat
         // Készíts függvényt, amely paraméterként kap egy minimum kapacitást.
         // A legalább ekkora kapacitású repülőgépek közül keresd meg a legnagyobb kapacitásút.
         // Add vissza a repülőgép nevét.
 
+        public string _14(int minCapacity)
+        {
+            return PlanesDict.SelectMany(x => x.Value).Where(x => x.Capacity >= minCapacity).OrderByDescending(x => x.Capacity).Select(x => x.PlaneName).First();
+        }
 
         // 15. feladat
         // Készíts függvényt, amely paraméterként kap egy repülőgéptípust.
         // Az adott típushoz tartozó repülőgépek közül keresd meg a legrégebben gyártott repülőgépet.
         // Add vissza a repülőgép nevét.
 
+        public string _15(PlaneType tipus)
+        {
+            return PlanesDict[tipus].OrderBy(x => x.BuiltYear).Select(x => x.PlaneName).First();
+        }
 
         // 16. feladat
         // Készíts függvényt, amely paraméterként kap egy évszámot.
         // Számítsd ki azoknak a repülőgépeknek az átlagos kapacitását, amelyek a paraméterként kapott évben vagy azután készültek.
 
+        public double _16(int year)
+        {
+            return PlanesDict.SelectMany(x => x.Value).Where(x => x.BuiltYear > year).Average(x => x.Capacity);
+        }
 
         // 17. feladat
         // Készíts függvényt, amely paraméterként kap egy szövegrészletet.
@@ -232,6 +265,10 @@ namespace DELETE
         // A keresés során ne számítson,hogy kis- vagy nagybetűkkel adták meg a keresett kifejezést.
         // Az eredményt ABC-sorrendben add vissza.
 
+        public List<string> _17(string szoveg)
+        {
+            return PlanesDict.SelectMany(x => x.Value).Where(x => x.PlaneName.ToLower().Contains(szoveg.ToLower())).OrderBy(x => x.PlaneName).Select(x => x.PlaneName).ToList();
+        }
 
         // 18. feladat
         // Készíts függvényt, amely paraméterként kap két szöveget.
@@ -243,12 +280,20 @@ namespace DELETE
         //
         //Rendezd őket gyártási év szerint csökkenő sorrendbe.
 
-
+        public List<Plane> _17(string szoveg1, string szoveg2)
+        {
+            return PlanesDict.SelectMany(x => x.Value).Where(x => x.PlaneName.ToLower().StartsWith(szoveg1.ToLower()) || x.PlaneName.ToLower().StartsWith(szoveg2.ToLower())).ToList();
+        }
 
         // 19. feladat
         // Készíts függvényt, amely paraméterként kap egy repülőgéptípust és egy minimum sebességet.
         // Add vissza az adott típushoz tartozó olyan repülőgépek neveit, amelyek maximális sebessége nagyobb, mint a paraméterként kapott minimum sebesség.
         // Az eredményt MaxSpeed szerint csökkenő sorrendbe rendezd.
+
+        public List<string> _19(PlaneType planeType, int minSpeed)
+        {
+            return PlanesDict[planeType].Where(x => x.MaxSpeed > minSpeed).OrderByDescending(x => x.MaxSpeed).Select(x => x.PlaneName).ToList();
+        }
 
         // 20. feladat
         // Készíts függvényt, amely típusonként kiszámítja az összes férőhely számát.
@@ -257,6 +302,10 @@ namespace DELETE
         // Például:
         // "Személyszállító" -> 1250
 
+        public Dictionary<string, int> _20()
+        {
+            return PlanesDict.ToDictionary(x => x.Key.TypeName, x => x.Value.Capacity);
+        }
 
         // 21. feladat
         // Készíts függvényt, amely típusonként megkeresi a legnagyobb kapacitású repülőgépet.
@@ -264,9 +313,18 @@ namespace DELETE
         //
         // A feladat megoldásánál használj GroupBy-t,
 
+        public List<string> _21()
+        {
+            return PlanesDict.GroupBy(x => x.Key).Select(x => x).OrderByDescending(x => x.Capacity).Select(x => x.PlaneName).Take(1).ToList();
+        }
 
         // 22. feladat
         // Készíts függvényt, amely visszaadja a 3 legújabb olyan repülőgépet, amely legalább 150 fő befogadására képes.
+
+        public List<Plane> _22()
+        {
+            return PlanesDict.SelectMany(x => x.Value).OrderByDescending(x => x.BuiltYear).Where(x => x.Capacity >= 150).Take(3).ToList();
+        }
 
         // 23. feladat
         // Készíts függvényt, amely paraméterként kap egy évszámot.
@@ -274,11 +332,19 @@ namespace DELETE
         // Add vissza egy szótárban:
         // TypeName -> darabszám.
 
+        public Dictionary<string, int> _23(int year)
+        {
+            return PlanesDict.ToDictionary(x => x.Key.TypeName, x => x.Value.Where(x => x.BuiltYear > year).Count());
+        }
 
         // 24. feladat
         // Készíts függvényt, amely megkeresi azokat a repülőgéptípusokat,  amelyekhez tartozó repülőgépek átlagos maximális sebessége  nagyobb 700 km/h-nál.
         // Add vissza csak a típusok neveit, az átlagos sebességük szerint csökkenő sorrendben.
 
+        public List<string> _24()
+        {
+            return PlanesDict.Wh;
+        }
 
         // 25. feladat
         // Készíts függvényt, amely visszaadja az első 3 olyan repülőgépet,
