@@ -98,6 +98,17 @@ List<int> _5()
 Model MODEL = new Model();
 
 
+MODEL._5(2000);
+MODEL._6();
+MODEL._7();
+MODEL._8();
+MODEL._9();
+MODEL._10(100);
+MODEL._11(3);
+MODEL._12(50, 200);
+MODEL._13(300, 2010);
+MODEL._14(125);
+
 
 //III.rész -> Öröklődés:
 
